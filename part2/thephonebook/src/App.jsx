@@ -3,10 +3,15 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import personsService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [filter, setFilter] = useState('')
+  const [notification, setNotification] = useState({
+    message: null,
+    type: ''
+  })
 
   const hook = () => {
     personsService
@@ -26,6 +31,18 @@ const App = () => {
 				.then(() => {
           setPersons(persons.filter(p => p.id !== id))
         })
+        .catch(error => {
+          setNotification({
+            message: `Information of '${person.name}' has already been removed from server`,
+            type: 'error'
+          })
+          setTimeout(() => {
+            setNotification({
+              message: null,
+              type: ''
+            })
+          }, 3000)
+      })
 		}
 	}
 
@@ -38,9 +55,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>Add a new</h2>
-      <PersonForm persons={persons} setPersons={setPersons} />
+      <PersonForm persons={persons} setPersons={setPersons} setNotification={setNotification} />
       <h2>Numbers</h2>
       <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>

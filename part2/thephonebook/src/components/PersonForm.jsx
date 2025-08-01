@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import personsService from '../services/persons'
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons, setNotification}) => {
 	const [newName, setNewName] = useState('')
 	const [newNumber, setNewNumber] = useState('')
 
@@ -38,6 +38,16 @@ const PersonForm = ({persons, setPersons}) => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNotification({
+          message: `Added ${person.name}`,
+          type: 'confirmation'
+        })
+        setTimeout(() => {
+          setNotification({
+            message: null,
+            type: ''
+          })
+        }, 3000)
       })
   }
 
