@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import personsService from '../services/persons'
 
-const PersonForm = ({persons, setPersons, setNotification}) => {
+const PersonForm = ({persons, setPersons, showNotification}) => {
 	const [newName, setNewName] = useState('')
 	const [newNumber, setNewNumber] = useState('')
 
@@ -28,6 +28,10 @@ const PersonForm = ({persons, setPersons, setNotification}) => {
             setPersons(persons.map(p => p.name !== person.name ? p : returnedPerson))
             setNewName('')
             setNewNumber('')
+            showNotification(`Updated ${person.name}`)
+          })
+          .catch(error => {
+            showNotification(error.response.data.error, 'error')
           })
     }
     return
@@ -38,16 +42,10 @@ const PersonForm = ({persons, setPersons, setNotification}) => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-        setNotification({
-          message: `Added ${person.name}`,
-          type: 'confirmation'
-        })
-        setTimeout(() => {
-          setNotification({
-            message: null,
-            type: ''
-          })
-        }, 3000)
+        showNotification(`Added ${person.name}`)
+      })
+      .catch(error => {
+        showNotification(error.response.data.error, 'error')
       })
   }
 

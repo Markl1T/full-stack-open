@@ -13,6 +13,13 @@ const App = () => {
     type: ''
   })
 
+  const showNotification = (message, type = 'confirmation') => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: null, type: '' })
+    }, 3000)
+  }
+
   const hook = () => {
     personsService
       .getAll()
@@ -32,16 +39,7 @@ const App = () => {
           setPersons(persons.filter(p => p.id !== id))
         })
         .catch(error => {
-          setNotification({
-            message: `Information of '${person.name}' has already been removed from server`,
-            type: 'error'
-          })
-          setTimeout(() => {
-            setNotification({
-              message: null,
-              type: ''
-            })
-          }, 3000)
+          showNotification(`Information of '${person.name}' has already been removed from server`, 'error')
       })
 		}
 	}
@@ -58,7 +56,7 @@ const App = () => {
       <Notification notification={notification} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>Add a new</h2>
-      <PersonForm persons={persons} setPersons={setPersons} setNotification={setNotification} />
+      <PersonForm persons={persons} setPersons={setPersons} showNotification={showNotification} />
       <h2>Numbers</h2>
       <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>
